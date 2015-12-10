@@ -1,0 +1,4 @@
+1. Convert map data into 2d array
+2. Splice Plane Width of entries from X, from Plane Height of rows
+3. Repeat until Width of world is complete, numbering each plane starting from 0
+4. Input each new "Row" into a 2d (3d?) array
