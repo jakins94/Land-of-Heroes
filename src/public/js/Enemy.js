@@ -18,15 +18,28 @@ var Enemy = Class.extend({
 		this.followDistance = 500;
 		this.speed = 2;
 		this.alive = true;
+		this.attackSpeed = 750;
 
 		this.sprite = new Image();
 		this.sprite.src = './sprites/'+spriteName+'.png';
 
 		this.hitArray = [];
 
+		this.num1 = 1.15, this.num2 = 2.15;
+
 		this.gotHit = function(damage, player) {
+			var damageText = [];
+			var rand = Math.random();
+			var rand2 = Math.random() / 3 + .75;
+			var rand3 = Math.random() / 5 + .9;
+ 			var num1 = this.num1 * rand2, num2 = this.num2 * rand3;
 			this.hp -= damage;
-			let damageText = [damage, 3, 1];
+			if(rand <= .33)
+				damageText = [damage, num1, num2, 1];
+			else if(rand > .33 && rand <= .66)
+				damageText = [damage, num1, num2, -1];
+			else
+				damageText = [damage, num1, num2, 0];
 			this.hitArray.push(damageText);
 
 			this.target = player.id;
@@ -60,20 +73,34 @@ var Enemy = Class.extend({
 			ctx.fillStyle = '#e6e6e6';
 			ctx.fillText(this.name, this.x+bgX-16, this.y+bgY-40);
 
+			ctx.fillStyle = 'orange';
+			ctx.strokeStyle = 'black';
+
 			for(let i=0;i<this.hitArray.length;i++) {
 				ctx.save();
-				this.hitArray[i][1] = this.hitArray[i][1] * 1.035;
-				//this.hitArray[i][2] = this.hitArray[i][2] * 1.05;
-				//ctx.globalAlpha = 1 - (this.hitArray[i][2] / 1000);
-				ctx.font = 'bold 30px Eskargot';
-				ctx.fillText(this.hitArray[i][0], this.x+bgX, this.y+bgY - 16 - this.hitArray[i][1]);
-				ctx.font = '30px Eskargot';
-				ctx.strokeText(this.hitArray[i][0], this.x+bgX, this.y+bgY - 16 - this.hitArray[i][1]);
+				this.hitArray[i][1] = this.hitArray[i][1] * 1.090;
+				this.hitArray[i][2] = this.hitArray[i][2] * 1.125;
+				this.hitArray[i][3] = this.hitArray[i][3] * 1.055;
+				console.log(this.hitArray[i][1], this.hitArray[i][2], this.hitArray[i][3]);
+				ctx.globalAlpha = 1 - (this.hitArray[i][2] / 1000);
+				ctx.font = 'bold 30px Acknowledge';
+				ctx.fillText(this.hitArray[i][0], this.x+bgX-16 + this.hitArray[i][3], this.y+bgY - this.hitArray[i][1]);
+				ctx.font = '30px Acknowledge';
+				ctx.strokeText(this.hitArray[i][0], this.x+bgX-16 + this.hitArray[i][3], this.y+bgY - this.hitArray[i][1]);
 				ctx.restore();
 
-				if(this.hitArray[i][2] / 1000 >= 1)
+				/*if(this.hitArray[i][1] / 1000 >= 1)
+					this.hitArray.splice(i, 1);*/
+
+					if(this.hitArray[i][2] / 950 >= 1)
+						delete this.hitArray[i];
+			}
+
+			for(let i=0;i<this.hitArray.length;i++) {
+				if(typeof this.hitArray[i] == "undefined")
 					this.hitArray.splice(i, 1);
 			}
+
 		};
 
 		//this.spriteId = spriteId;

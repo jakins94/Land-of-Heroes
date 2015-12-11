@@ -25,9 +25,21 @@ var Player = Class.extend({
 
 		this.hitArray = [];
 
+		this.num1 = 1.15, this.num2 = 2.15;
+
 		this.hitByEnemy = function(damage, enemy) {
+			var damageText = [];
+			var rand = Math.random();
+			var rand2 = Math.random() / 3 + .75;
+			var rand3 = Math.random() / 5 + .9;
+ 			var num1 = this.num1 * rand2, num2 = this.num2 * rand3;
 			this.hp -= damage;
-			let damageText = [damage, 3, 1];
+			if(rand <= .33)
+				damageText = [damage, num1, num2, 1];
+			else if(rand > .33 && rand <= .66)
+				damageText = [damage, num1, num2, -1];
+			else
+				damageText = [damage, num1, num2, 0];
 			this.hitArray.push(damageText);
 
 			//this.target = enemy.id;
@@ -107,17 +119,19 @@ var Player = Class.extend({
 		//	ctx.strokeText(this.name, this.x+this.bgX, this.y+this.bgY-32);
 
 		ctx.fillStyle = 'red';
-		ctx.strokeStyle = '#C50000';
+		ctx.strokeStyle = 'black';
 
 		for(let i=0;i<this.hitArray.length;i++) {
 			ctx.save();
-			this.hitArray[i][1] = this.hitArray[i][1] * 1.0337;
-			this.hitArray[i][2] = this.hitArray[i][2] * 1.075;
+			this.hitArray[i][1] = this.hitArray[i][1] * 1.090;
+			this.hitArray[i][2] = this.hitArray[i][2] * 1.125;
+			this.hitArray[i][3] = this.hitArray[i][3] * 1.055;
+			console.log(this.hitArray[i][1], this.hitArray[i][2], this.hitArray[i][3]);
 			ctx.globalAlpha = 1 - (this.hitArray[i][2] / 1000);
-			ctx.font = 'bold 22px Eskargot';
-			ctx.fillText(this.hitArray[i][0], this.x+this.bgX, this.y+this.bgY - this.hitArray[i][1]);
-			//ctx.font = '22px Eskargot';
-		//	ctx.strokeText(this.hitArray[i][0], this.x+this.bgX, this.y+this.bgY - 16 - this.hitArray[i][1]);
+			ctx.font = 'bold 30px Acknowledge';
+			ctx.fillText(this.hitArray[i][0], this.x+this.bgX + this.hitArray[i][3], this.y+this.bgY + 16 - this.hitArray[i][1]);
+			ctx.font = '30px Acknowledge';
+			ctx.strokeText(this.hitArray[i][0], this.x+this.bgX + this.hitArray[i][3], this.y+this.bgY + 16 - this.hitArray[i][1]);
 			ctx.restore();
 
 			/*if(this.hitArray[i][1] / 1000 >= 1)

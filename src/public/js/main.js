@@ -178,7 +178,7 @@ let worldX = 10;
 let worldY = 10;
 let tileSize = 32;
 let worldSize = 100;
-let mapName = 'tutorial';
+let mapName = 'cave';
 
 let initMap = function() {
 	let worldRight = worldSize * tileSize;
@@ -228,7 +228,9 @@ let initMap = function() {
 
 let gameHandlers = function() {
 
-	$('#gameArea').mousemove(function(e){
+	window.addEventListener("resize", onResize);
+
+	$('#gameContainer').mousemove(function(e){
 		mX = e.pageX, mY = e.pageY;
 		let player = playerById(socket.id);
 		interfaceId = -1;
@@ -309,6 +311,11 @@ function clamp(value, min, max){
 	if(value < min) return min;
 	else if(value > max) return max;
 	return value;
+}
+
+function onResize() {
+	mCanvas.width = window.innerWidth;
+	mCanvas.height = window.innerHeight;
 }
 
 function startUp() {
@@ -462,7 +469,7 @@ function enemyAttack(enemy) {
 
 	let player = playerById(enemy.target);
 	if(player.hp > 0) {
-		if(enemy.lastAttack <= Date.now() - 1000) {
+		if(enemy.lastAttack <= Date.now() - enemy.attackSpeed) {
 			enemy.lastAttack = Date.now();
 			let damage = 1 + Math.floor(Math.random() * enemy.strength);
 			player.hitByEnemy(damage, enemy);
